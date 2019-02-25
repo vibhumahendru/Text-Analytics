@@ -1,25 +1,88 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
+import ReactChartkick, { LineChart, PieChart, ColumnChart } from 'react-chartkick'
+import Chart from 'chart.js'
 import './App.css';
 
+ReactChartkick.addAdapter(Chart)
+
 class App extends Component {
+
+  state={
+    inputVal: null,
+    chartArray:[]
+  }
+
+  handleInput=(event)=>{
+
+    let lowCaseString = event.target.value.toLowerCase()
+    let charAr = [...lowCaseString]
+    let charObj={}
+    let chartAr = []
+
+      charAr.forEach((char) => {
+        if(char !== " "){
+        charObj[char] = 0
+          }
+      })
+      charAr.forEach((char)=>{
+        if(char !== " "){
+        charObj[char] += 1
+          }
+      })
+
+      for(var key in charObj){
+        let elementAr = []
+        elementAr.push(key)
+        elementAr.push(charObj[key])
+        chartAr.push(elementAr)
+      }
+
+      chartAr.sort(function(a,b) {
+        return b[1]-a[1]
+      });
+
+      this.setState({
+        chartArray:chartAr
+      })
+  }
+
+
+  // handleSort=()=>{
+  //   let lowCaseString = this.state.inputVal.toLowerCase()
+  //   let charAr = [...lowCaseString]
+  //   let charObj={}
+  //   let chartAr = []
+  //
+  //     charAr.forEach((char) => {
+  //       if(char !== " "){
+  //       charObj[char] = 0
+  //         }
+  //     })
+  //     charAr.forEach((char)=>{
+  //       if(char !== " "){
+  //       charObj[char] += 1
+  //         }
+  //     })
+  //
+  //     for(var key in charObj){
+  //       let elementAr = []
+  //       elementAr.push(key)
+  //       elementAr.push(charObj[key])
+  //       chartAr.push(elementAr)
+  //     }
+  //     this.setState({
+  //       chartArray:chartAr
+  //     })
+  //
+  // }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <input onChange={(event)=>this.handleInput(event)} type="text"></input>
+      <button onClick={this.handleSort}>sort</button>
+      <ColumnChart data={this.state.chartArray} />
       </div>
     );
   }
